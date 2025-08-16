@@ -42,6 +42,7 @@ def root():
             <li><a href="/version"><code>GET /version</code></a></li>
             <li><a href="/time"><code>GET /time</code></a></li>
           </ul>
+          <p>API Docs: <a href="/docs">Swagger</a> • <a href="/redoc">ReDoc</a></p>
           <p>Send a POST to <code>/echo</code> with JSON, e.g.:</p>
           <pre>curl -s -X POST "$HOST/echo" -H "Content-Type: application/json" -d '{"message":"hello"}'</pre>
         </div>
