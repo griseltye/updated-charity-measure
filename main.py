@@ -1,75 +1,61 @@
 from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse, PlainTextResponse, HTMLResponse
-from fastapi.middleware.cors import CORSMiddleware
-from datetime import datetime
+from fastapi.responses import HTMLResponse, FileResponse, PlainTextResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+from pathlib import Path
 import os
 
-app = FastAPI(title="Render FastAPI Test", version="0.1.0")
+BASE_DIR = Path(__file__).resolve().parent
+app = FastAPI(title="Charity's Measure", version="1.0.0")
 
-# CORS (helpful for quick frontend tests)
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# Templates/static
+templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
+if (BASE_DIR / "static").exists():
+    app.mount("/static", StaticFiles(directory=str(BASE_DIR / "static"), html=True), name="static")
 
 @app.get("/", response_class=HTMLResponse)
-def root():
-    return """
+def home(request: Request):
+    return HTMLResponse("""
     <!doctype html>
     <html>
       <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>Render FastAPI Test</title>
+        <meta charset='utf-8' />
+        <meta name='viewport' content='width=device-width, initial-scale=1' />
+        <title>Charity's Measure</title>
         <style>
-          body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; padding: 2rem; line-height: 1.5; }
-          code { background: #f4f4f4; padding: 0.2rem 0.4rem; border-radius: 4px; }
-          .card { max-width: 680px; border: 1px solid #eaeaea; border-radius: 10px; padding: 1rem 1.25rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-          h1 { margin-top: 0; }
+          body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; padding: 1.5rem; line-height:1.5; }
           a { color: #2563eb; text-decoration: none; }
-          a:hover { text-decoration: underline; }
+          .card { max-width: 780px; border:1px solid #e5e7eb; border-radius: 12px; padding: 20px; }
+          .btn { display:inline-block; padding:10px 14px; border:1px solid #e5e7eb; border-radius:10px; }
         </style>
       </head>
       <body>
         <div class="card">
-          <h1>✅ Render FastAPI Test</h1>
-          <p>Your service is up. Try a few endpoints:</p>
-          <ul>
-            <li><a href="/healthz"><code>GET /healthz</code></a></li>
-            <li><a href="/version"><code>GET /version</code></a></li>
-            <li><a href="/time"><code>GET /time</code></a></li>
-          </ul>
-          <p>API Docs: <a href="/docs">Swagger</a> • <a href="/redoc">ReDoc</a></p>
-          <p>Send a POST to <code>/echo</code> with JSON, e.g.:</p>
-          <pre>curl -s -X POST "$HOST/echo" -H "Content-Type: application/json" -d '{"message":"hello"}'</pre>
+          <h1>✅ Charity's Measure</h1>
+          <p>This is the FastAPI version serving your working HTML app.</p>
+          <p><a class="btn" href="/app">Open the App</a></p>
+          <p><a class="btn" href="/download/xlsx">Download Spreadsheet</a></p>
+          <p>Health: <a href="/healthz">/healthz</a> • Docs: <a href="/docs">/docs</a></p>
         </div>
       </body>
     </html>
-    """
+    """)
+
+@app.get("/app", response_class=HTMLResponse)
+def app_view(request: Request):
+    return templates.TemplateResponse("charitys_measure.html", {"request": request})
+
+@app.get("/download/xlsx")
+def download_xlsx():
+    xlsx = BASE_DIR / "assets" / "Charity_Sheets.xlsx"
+    return FileResponse(str(xlsx), media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", filename="Charity_Sheets.xlsx")
 
 @app.get("/healthz", response_class=PlainTextResponse)
 def healthz():
     return "ok"
 
-@app.get("/version")
-def version():
-    return {"app": app.title, "version": app.version}
-
-@app.get("/time")
-def time():
-    return {"utc": datetime.utcnow().isoformat() + "Z"}
-
-@app.post("/echo")
-async def echo(req: Request):
-    payload = await req.json()
-    return JSONResponse({"received": payload})
-
 @app.get("/env")
 def env():
-    # Helpful debugging info when running on Render
     return {
         "port": os.getenv("PORT"),
         "render_service": os.getenv("RENDER_SERVICE_NAME"),

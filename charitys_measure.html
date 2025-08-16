@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Charity's Measure — Static (Mirrored Layout)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root { --line:#d0d7de; }
+    @media print {
+      .no-print { display:none !important; }
+      body { margin:0.5in; }
+      input, button { display:none !important; }
+    }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, "Noto Sans", sans-serif; margin: 18px; }
+    .inputs { display:flex; flex-direction: column; gap: 10px; max-width: 640px; }
+    .q { display:flex; flex-direction: column; gap: 6px; }
+    .q label { font-weight:600; }
+    .q input[type=number], .q input[type=text] { padding:10px; border:1px solid #f6e05e; background:#fff59d; border-radius:8px; font-size: 16px; }
+    .btn { border:1px solid var(--line); background:#fff; padding:8px 12px; border-radius:8px; cursor:pointer; }
+    .grid16 { display:grid; grid-template-columns: 1fr 0.7fr 1fr 1fr; gap: 2px; }
+    .cell { color:#fff; padding:8px 10px; font-weight:700; text-transform: uppercase; }
+    .num { font-size: 22px; text-align:center; }
+    .small { font-size: 12px; font-weight:500; text-transform:none; }
+    .grid18, .grid19, .grid20, .grid21 { display:grid; grid-template-columns: 1fr 0.6fr 1fr; gap:2px; }
+    .grid22 { display:grid; grid-template-columns: 1fr 1fr; gap:2px; }
+  </style>
+</head>
+<body>
+  <div class="no-print" style="margin-bottom:10px;">
+    <button class="btn" onclick="window.print()">Save as PDF</button>
+  </div>
+
+  <div class="inputs" id="inputs"></div>
+
+  <div class="grid16">
+    <div class="cell" style="background:#a61c00;">
+      Your Score Adjusted for all Inputs:
+      <div class="num" id="r16_left_val"></div>
+    </div>
+    <div class="cell" style="background:#cc0000;">
+      Your Total Score out of 80 Possible
+      <div class="num" id="r16_mid_val"></div>
+    </div>
+    <div class="cell" style="background:#990000; text-align:center;" id="r16_right1">YOU ARE LOST</div>
+    <div class="cell" style="background:#cc0000; text-align:center;" id="r16_right2">AND, YOU EMBRACE SELFISHNESS!!!</div>
+  </div>
+
+  <div class="cell small" style="background:#1e1e1e; color:#fff; margin: 8px 0;">
+    80 Points Possible plus Jesus = 81 Possible
+    <span class="num" id="b17_val" style="margin-left:8px;"></span>
+  </div>
+  <div class="cell small" style="background:#1e1e1e; color:#fff; margin-bottom: 8px;">
+    81 is the only Perfect Number.  Why?  Because it is the only number that, when 1 is divided by its value, provides an infinite number of whole numbers.  Hence, it is Wholly.  So then, and numerically only, only 80 points are possible, when you add the ONE you TRUST most in life, it equals 81.
+  </div>
+
+  <div class="grid18">
+    <div class="cell" style="background:#274e8a; text-align:center;">SELF-EXAMINATION</div>
+    <div class="cell" style="background:#274e8a; text-align:center;">YOUR  SCORE <span id="r18_score"></span></div>
+    <div class="cell" style="background:#274e8a; text-align:center;" id="r18_text"></div>
+  </div>
+
+  <div class="grid19" style="margin-top:2px;">
+    <div class="cell" style="background:#38761d; text-align:center;">DO YOU ACCEPT JESUS INTO YOUR  LIFE?</div>
+    <div class="cell" style="background:#38761d; text-align:center;">
+      YES (Y) or NO (N) 
+      <input id="d19" type="text" maxlength="1" pattern="[yYnN]" placeholder="y/n" style="margin-left:8px;">
+    </div>
+    <div class="cell" style="background:#38761d; text-align:center;" id="r19_msg"></div>
+  </div>
+
+  <div class="grid20" style="margin-top:2px;">
+    <div class="cell" style="background:#e69138; text-align:center;" id="r20_left">JESUS ADDS TO YOUR EFFORT</div>
+    <div class="cell" style="background:#e69138; text-align:center;" id="r20_mid"></div>
+    <div class="cell" style="background:#e69138; text-align:center; font-style:italic;" id="r20_script"></div>
+  </div>
+
+  <div class="grid21" style="margin-top:2px;">
+    <div class="cell" style="background:#6aa84f; text-align:center;" id="r21_left">YOUR SCORE WITH JESUS ADDED</div>
+    <div class="cell" style="background:#6aa84f; text-align:center;" id="r21_mid"></div>
+    <div class="cell" style="background:#6aa84f; text-align:center;" id="r21_script"></div>
+  </div>
+
+  <div class="grid22" style="margin-top:2px;">
+    <div class="cell" style="background:#c00000; text-align:center;" id="r22_left">YOU GET ONE MORE CHANCE</div>
+    <div class="cell" style="background:#c00000; text-align:center;" id="r22_right">WELCOME TO THE TRIBULATION</div>
+  </div>
+
+<script>
+const LABELS = ["NOT EASILY PROVOKED", "NEVER SEEK YOUR OWN", "NOT PRIDEFUL", "YOU ARE LONG SUFFERING", "YOU ARE NEVER EVIL", "YOU ARE NEVER ENVIOUS", "YOU ARE ALWAYS KIND", "YOU NEVER ACT UNSEEMLY"];
+const INPUTS_MAP = [[0.0, "YOU ARE PURE EVIL,", "AND, YOU ARE SATAN!!!"], [0.1, "YOU ARE PURE EVIL,", "AND, YOU MAY BE THE BEAST!!!"], [0.2, "YOU ARE PURE EVIL,", "AND, YOU ARE HANDING OUT LEAFLETS OF THE FALSE PROPHET!!!"], [0.3, "YOU ARE PURE EVIL,", "AND, YOU ARE COUNTED IN AS THE SPAWN OF SATAN!!!"], [0.4, "YOU ARE PURE EVIL,", "AND, YOU ARE IN THE SADDLE BAGS OF THE WHITE HORSE CONQUERING ALL!!!"], [0.5, "YOU ARE PURE EVIL,", "AND, YOU ARE IN THE SADDLE BAGS OF THE RED HORSE TO TAKE PEACE FROM THE EARTH!!!"], [0.6, "YOU ARE PURE EVIL,", "AND, YOU ARE IN THE SADDLE BAGS OF THE BLACK HORSE STEALING THE WEALTH OF THE WORLD!!!"], [0.7, "YOU ARE PURE EVIL,", "AND, YOU ARE IN THE  SADDLE BAGS OF THE PALE HORSE WITH DEATH AND HELL FOLLOWING!!!"], [0.7999999999999999, "YOU ARE PURE EVIL,", "AND, YOU ARE A GRIEVOUS SORE BEARING THE MARK OF THE BEAST!!!"], [0.8999999999999999, "YOU ARE PURE EVIL,", "AND, YOU PARTICIPATE IN THE BLOOD OF A DEAD MAN KILLING ALL THAT YOU SEE!!!"], [0.9999999999999999, "YOU ARE EVIL,", "AND, YOU CHEER FOR THE BLOODSHED OF THE SAINTS!!!"], [1.0999999999999999, "YOU ARE EVIL,", "AND, YOU PARTICIPATE IN THE EVIL SCORCH OF FIRE AND TORMENT TO MANKIND!!!"], [1.2, "YOU ARE EVIL,", "AND, YOU PARTICIPATE IN THE EVIL PAINS AND SORES KNAWING AT MANKIND!!!"], [1.3, "YOU ARE EVIL,", "AND, YOU ARE THE VIAL OF THE DRY EUPHRATES MAKING THE WAY OF THE EVIL DOERS!!!"], [1.4000000000000001, "YOU ARE EVIL,", "AND, YOU ARE THE FIRST UNCLEAN FROG FROM THE FOUL MOUTH OF THE DRAGON!!!"], [1.5000000000000002, "YOU ARE EVIL,", "AND, YOU ARE THE SECOND UNCLEAN FROG FROM THE FOUL MOUTH OF THE DRAGON!!!"], [1.6000000000000003, "YOU ARE EVIL,", "AND, YOU ARE THE THIRD UNCLEAN FROG FROM THE FOUL MOUTH OF THE DRAGON!!!"], [1.7000000000000004, "YOU ARE EVIL,", "AND, YOU WILL BE CONSUMED IN THE GREAT HAIL FROM HEAVEN!!!"], [1.8000000000000005, "YOU ARE EVIL,", "AND, THE GREAT WHORE OF THE ALL THE WORLD GIVES YOU HER NUMBER!!!"], [1.9000000000000006, "YOU ARE EVIL,", "AND, THE MOTHER OF HARLOTS REVELS IN THE PAIN YOU CAUSE!!!"], [2.0000000000000004, "YOU ARE CHOOSING EVIL,", "AND, YOU ARE DRUNKEN WITH THE BLOOD OF THE SAINTS!!!"], [2.1000000000000005, "YOU ARE CHOOSING EVIL,", "AND, THE MOTHER OF ABOMINATIONS OF THE WORLD HAS ADOPTED YOU!!!"], [2.2000000000000006, "YOU ARE CHOOSING EVIL,", "AND, YOU ARE NOW A FULLY COUPLED DISCIPLE OF THE DEVIL!!!"], [2.3000000000000007, "YOU ARE CHOOSING EVIL,", "AND, YOUR REJECTION OF THE PRINCIPLES OF LOVE ARE NEARING THE POINT OF NO REDEMPTION!!!"], [2.400000000000001, "YOU ARE CHOOSING EVIL,", "AND, YOUR WORLD HAS BECOME FULLY DARK AND LONELY!!!"], [2.500000000000001, "YOU ARE CHOOSING EVIL,", "AND, THE LOVE OF GOD IS BARELY RECOGNIZABLE TO YOU NOW!!!"], [2.600000000000001, "YOU ARE CHOOSING EVIL,", "AND, DARKNESS HAS CONSUMED THE SPACE THAT YOU SHARE WITH IT!!!"], [2.700000000000001, "YOU ARE CHOOSING EVIL,", "AND, DARKNESS IS COURTING YOU FOREVER MORE!!!"], [2.800000000000001, "YOU ARE CHOOSING EVIL,", "AND, DARKNESS IS WELCOMED INTO YOUR LIFE!!!"], [2.9000000000000012, "YOU ARE CHOOSING EVIL,", "AND YOU'RE NOT TO GOOD AT IT!!!"], [3.0000000000000013, "YOU ARE CHOOSING EVIL,", "AND YOU ARE OPENING THE DOOR!!!"], [3.1000000000000014, "YOU HAVE WANDERED FAR OFF THE PATH OF RIGHTEOUSNESS", "AND, DARKNESS IS TRACKING YOU!!!"], [3.2000000000000015, "A FALSE PROMISE IS BEING OFFERED", "AND, EVIL AND ENMITY BECKON YOU!!!"], [3.3000000000000016, "SOMETHING IS BEING OFFERED", "AND, YOU BEGIN TO HEAR CLEARLY THE EVIL THAT WHISPERS TO YOU!!!"], [3.4000000000000017, "SOMETHING IS WRONG", "AND, YOU BEGIN TO COMPLAIN AND DESIRE MORE!!!"], [3.5000000000000018, "YOU ARE LOST", "AND, YOU EMBRACE SELFISHNESS!!!"], [3.600000000000002, "SELFISHNESS IS UPON YOU", "AND, YOU ARE BEGINNING TO ENJOY IT!!!"], [3.700000000000002, "SELFISHNESS IS UPON YOU", "AND, YOU ARE FULL OF VANITY AND PRIDE!!!"], [3.800000000000002, "SELFISHNESS IS UPON YOU", "AND, THERE IS NO ROOM FOR OTHERS!!!"], [3.900000000000002, "WICKED DARTS OF DARKNESS", "AND, YOU CHOOSE THE WRONG OVER THE RIGHT!!!"], [4.000000000000002, "BREASTPLATE OF RIGHTEOUSNESS", "AND, NOW… YOU MUST MAKE A CHOICE NOW!!!"], [4.100000000000001, "SWORD OF YOUR TRUTH", "AND, YOU WEIGH THE PROMISE OF QUITTING TO ENDURING IN PAIN!!!"], [4.200000000000001, "BOW AND ARROWS OF FURTHER LIGHT AND KNOWLEDGE", "AND, YOU ARE EMBRACING FEAR AND TERROR OVER STEADY DISCIPLINED COMEBACK!!!"], [4.300000000000001, "BOW AND ARROWS OF FURTHER LIGHT AND KNOWLEDGE", "AND, YOU SURRENDER TO GUILT AND SHAME!!!"], [4.4, "SWORD OF YOUR TRUTH", "AND, YOU SLIP! YOU GO OVER THE EDGE IN DEFEAT!"], [4.5, "SWORD OF YOUR TRUTH", "AND, THE MOMENT IS NEARING THAT YOU ARE NOT SURE YOU CAN MAINTAIN!"], [4.6, "YOUR IMMATURITY IS REVEALED", "AND, YOU FALL AND STRUGGLE BEING LUKE WARM AND NEITHER COLD NOR HOT!!!"], [4.699999999999999, "YOUR IMMATURITY IS REVEALED", "AND, YOU NOW WRESTLE WITH THE PROMISE OF RIGHTEOUSNESS!!!"], [4.799999999999999, "SWORD OF YOUR TRUTH", "AND, YOU ARE TRYING TO LEARN AND GROW, BUT SO TIRED!!!"], [4.899999999999999, "SHEILD OF FAITH", "AND, YOU ARE FEELING THE PAIN OF SELF-DISCIPLINE CALLING YOU TO GROW!!!"], [4.999999999999998, "SWORD OF YOUR TRUTH", "AND, YOU ONLY HOPE TO ENDURE THE UNKNOWN AHEAD!!!"], [5.099999999999998, "SPEAR OF YOUR LIFE'S DESTINY", "AND, YOU RECOGNIZE THE STEEP CLIMB OF FURTHER LIGHT AND PERFECTION AHEAD OF YOU!!!"], [5.1999999999999975, "SWORD OF YOUR TRUTH", "AND, YOU ARE CONFRONTED WITH YOUR OWN EGO AND VANITY IN BEING WEAK!!!"], [5.299999999999997, "BOW AND ARROWS OF FURTHER LIGHT AND KNOWLEDGE", "AND, YOU ARE RECOGNIZING THE NEED FOR HELP BY OTHERS!!!"], [5.399999999999997, "SWORD OF YOUR TRUTH", "AND, THE WEIGHT OF YOUR INTELLIGENCE IS BEING MEASURED BY YOU!!!"], [5.4999999999999964, "SWORD OF YOUR TRUTH", "AND, NOW YOU MUST OVERCOME YOUR FEAR OF THE WRONG CHOICES IN LIFE!!!"], [5.599999999999996, "HELMET OF SALVATION", "AND, NOW… YOU MUST LISTEN TO THE STILL SMALL VOICE AND CHOOSE WISELY!!!"], [5.699999999999996, "BREASTPLATE OF RIGHTEOUSNESS", "AND, YOU ARE GIVEN THE CHOICE TO CLIMB OR DESCEND IN YOUR THINKING!!!"], [5.799999999999995, "HELMET OF SALVATION", "AND, WOW, YOU NOW KNOW SOMETHING YOU DIDN'T KNOW!!!"], [5.899999999999995, "HELMET OF SALVATION", "GOOD NEWS, IGNORANCE IS TEMPORARY, STUPID DOESN'T HAVE TO BE FOREVER!"], [5.999999999999995, "THE SWORD OF YOUR TRUTH", "IS CUTTING DEEP.  YOUR IGNORANCE IS REVEALED AND CHOOSING \"THE WHO OF YOU\" IS NEAR!"], [6.099999999999994, "THE SWORD OF YOUR TRUTH", "AND, ENDURING ALL THINGS MUST BE YOUR HOPE NOW!!!"], [6.199999999999994, "THE SWORD OF YOUR TRUTH", "AND, CRITICAL ACTIONS MUST BE TAKEN TO TURN THE TIDE OF HOPE IN YOUR FAVOR!!!"], [6.299999999999994, "REFINER'S FIRE", "AND, YOU MUST SEEK FURTHER LIGHT AND PERFECTION NOW!!!"], [6.399999999999993, "HELMET OF SALVATION", "AND, YOUR KNOWLEDGE BASE IS BECOMING BARREN AND UNDERSTANDING IS FLEETING AT THIS TIME!!!"], [6.499999999999993, "HELMET OF SALVATION", "AND, FOCUS, ORGANIZING A NEW VISION FOR YOUR LIFE IS ABSOLUTELY REQUIRED!!!"], [6.5999999999999925, "HELMET OF SALVATION", "AND, YOUR UNDERSTANDING IS FAILING YOU AND YOU NOW KNOW IT!!!"], [6.699999999999992, "HELMET OF SALVATION", "AND, YOUR DECISIONS ARE UNCLEAR, DIVIDED AND UNSURE!!!"], [6.799999999999992, "HELMET OF SALVATION", "AND, YOUR COURAGE IS WAINING, STEADY AS SHE GOES SEEMS IMPOSSIBLE!!!"], [6.8999999999999915, "HELMET OF SALVATION", "AND, A NEW VISION FOR YOUR LIFE IS NEEDED NOW OR ALL CAN BE LOST!!!"], [6.999999999999991, "HELMET OF SALVATION", "IS NEAR, CRITICAL ATTITUDE ACKNOWLEDGED, WINGS LEVEL NEEDED NOW!!!"], [7.099999999999991, "HELMET OF SALVATION", "AND THE INCIPIENT SINS ARE CREEPING IN UPON YOU!!!"], [7.19999999999999, "HELMET OF SALVATION", "AND, YOU STRUGGLING NOW TO CHOOSE BETWEEM THE WRONG WAY TO GO AND THE RIGHT!!!"], [7.29999999999999, "HELMET OF SALVATION", "AND, CHOOSING THE RIGHT HAS COME INTO QUESTION!!!"], [7.39999999999999, "HELMET OF SALVATION", "AND, YOU ARE STARTING TO QUESTION THE GREY AREAS IN RIGHTEOUSNESS!!!"], [7.499999999999989, "HELMET OF SALVATION", "AND, THE ROCKS AND HARD PLACES IN LIFE SEEM TO BE CLOSE MORE OFTEN THAN NOT!!!"], [7.599999999999989, "HELMET OF SALVATION", "AND, THOUGH YOU ARE THRIVING, YOU ARE QUESTIONING SOME OF THE WHY'S IN YOUR LIFE!!!"], [7.699999999999989, "HELMET OF SALVATION", "AND, THOUGH THINGS SEEM TO BE GOING FORWARD, SOMETHING IS MISSING!!!"], [7.799999999999988, "HELMET OF SALVATION", "AND, THE WORLD SEEMS DIFFERENT, AND IT'S TIME TO REVIEW THE BASICS OF  LOVE!!!"], [7.899999999999988, "HELMET OF SALVATION", "YOU ARE QUESTIONING WHETHER ANYBODY ELSE REALLY CARES!!!"], [7.999999999999988, "GOOD JOB", "YOU LOVE OTHERS AS YOU LOVE YOURSELF!!!"], [8.099999999999987, "GOOD JOB", "YOU LOVE OTHERS AND MAKE A FEW MISTAKES IN GIVING AND RECEIVING!!!"], [8.199999999999987, "GOOD JOB", "YOU LOVE OTHERS AND RARELY MAKE MISTAKES IN GIVING AND RECEIVING!!!"], [8.299999999999986, "GOOD JOB", "YOU LOVE OTHERS AND TRULY CARE FOR THEM!!!"], [8.399999999999986, "GREAT JOB", "YOU FOUND YOUR PATH IN LIFE AND LOVE CHAMPIONS YOUR WAY!!!"], [8.499999999999986, "GREAT JOB", "YOU ARE LIVING THE LIFE YOU ARE CALLED TO WITHOUT SELFISHNESS!!!"], [8.599999999999985, "GREAT JOB", "YOU ARE A GREAT TEACHER IN LIFE!!!"], [8.699999999999985, "EXCELLENT JOB", "YOU ARE A STANDARD OF EXCELLENCE TO YOUR FAMILY, FRIENDS, AND FELLOWMAN!!!"], [8.799999999999985, "EXCELLENT JOB", "YOU ARE A PROFIT TO ALL WHO KNOW YOU!!!"], [8.899999999999984, "EXCELLENT JOB", "YOU LOVE THE ONE'S YOU'RE WITH VERSUS HATE THE ONES YOU'RE WITH!"], [8.999999999999984, "EXCELLENT SAINT", "YOU ARE LOVING OTHERS AS JESUS HAS LOVED YOU!"], [9.099999999999984, "EXCELLENT SAINT", "JESUS, THIS PERSON IS A WATCHMAN, A BROTHER, A SISTER, A SAINT!!!"], [9.199999999999983, "EXCELLENT SAINT", "JESUS, HOW BEAUTIFUL THE DAY, HOW BEAUTIFUL THE WAY I SEE IN THIS PERSON!!!"], [9.299999999999983, "EXCELLENT SAINT", "JESUS, THANK YOU FOR BEING THE GOD OF ORDER AND EXCELLENCE THAT I SEE IN THIS PERSON!!!"], [9.399999999999983, "EXCELLENT SAINT", "JESUS, SEE'S US,FREE'S US, HE'S US, THANK YOU FOR THIS PERSON WHO'S LOVE NEEDS US!!!"], [9.499999999999982, "EXCELLENT SAINT", "JESUS, THANK YOU FOR PUTTING THIS PERSON IN MY LIFE TODAY!!!"], [9.599999999999982, "EXCELLENT SAINT", "JESUS, THIS PERSON IS RESTORING MY BELIEF IN MANKIND!!!"], [9.699999999999982, "EXCELLENT SAINT", "JESUS, JESUS… I KNOW NOT THE WORDS FOR THIS PERSON YOU'VE PUT INTO MY LIFE!!!"], [9.799999999999981, "PERFECT ONE", "JESUS…I BET THIS ONE GET'S RAPTURED!!!"], [9.89999999999998, "PERFECT ONE", "JESUS…THIS SAINT IS NEAR TO THE TRANSLATED POINT!"], [9.99999999999998, "PERFECT ONE", "JESUS…IS THAT YOU?"]];
+const SCRIPT_MAP = [[0.0, "Isaiah 14:9", " Hell from beneath is moved for thee to meet thee at thy coming: it stirreth up the dead for thee,"]];
+
+function lookupInputs(score10) {
+  let best = INPUTS_MAP[0];
+  for (const row of INPUTS_MAP) { if (row[0] <= score10) best = row; else break; }
+  return best;
+}
+function e18Lookup(d18) {
+  const key = Math.max(0, Math.min(1, parseFloat(d18)||0));
+  const target = Math.floor(key*100+1e-9)/100;
+  const k10 = Math.round(target*10*10)/10;
+  return lookupInputs(k10)[2] || "";
+}
+function scriptureLookup(d21) {
+  let best = SCRIPT_MAP[0];
+  for (const row of SCRIPT_MAP) { if (row[0] <= d21) best = row; else break; }
+  return best;
+}
+
+const inputsDiv = document.getElementById('inputs');
+const fields = [];
+for (let i = 0; i < 8; i++) {
+  const label = LABELS[i] || `Gate ${i+1}`;
+  const div = document.createElement('div');
+  div.className = 'q';
+  div.innerHTML = `<label>${label}</label><input id="d${8+i}" type="number" min="0" max="10" step="1" value="0">`;
+  inputsDiv.appendChild(div);
+  fields.push(document.getElementById('d'+(8+i)));
+}
+const d19 = document.getElementById('d19');
+
+function recalc(){
+  const scores = fields.map(f=>parseFloat(f.value||0));
+  const sum = scores.reduce((a,b)=>a+b,0);
+  const d16 = Math.ceil(sum*10)/10;
+  const b17 = 81;
+  const d18 = d16/b17;
+  const yn = (d19.value || '').trim().toLowerCase();
+  const yes = yn === 'y';
+  const d20 = yes ? (b17 - d16) : 0;
+  const d21 = yes ? (d16 + d20) : ((d18 < 0.2) ? (d16 * d20) : d18);
+
+  document.getElementById('r16_left_val').textContent = d16.toFixed(1);
+  document.getElementById('r16_mid_val').textContent = Math.round(sum).toString();
+  document.getElementById('b17_val').textContent = b17.toFixed(1);
+
+  document.getElementById('r18_score').textContent = (d18*100).toFixed(1) + '%';
+  document.getElementById('r18_text').textContent = e18Lookup(d18);
+
+  document.getElementById('r19_msg').textContent = yes 
+    ? "WELCOME BROTHER, WELCOME SISTER. LET'S GO DOWN TO THE RIVER TO PRAY, STUDYING ABOUT THAT GOOD OLE WAY!!!"
+    : " ";
+
+  const s = scriptureLookup(d21);
+  document.getElementById('r20_mid').textContent = d20.toFixed(1);
+  document.getElementById('r20_script').textContent = s[2];
+
+  document.getElementById('r21_mid').textContent = yes ? (d16 + d20).toFixed(1) : d18.toFixed(4);
+  document.getElementById('r21_script').textContent = s[1] || '';
+
+  const r22_left = (!yes || d18 < 0.2) ? "YOU GET ONE MORE CHANCE" : "WELCOME TO THE SAFE HOUSE OF THE LORD";
+  const r22_right = (!yes || d18 < 0.2) ? "WELCOME TO THE TRIBULATION" : "";
+  document.getElementById('r22_left').textContent = r22_left;
+  document.getElementById('r22_right').textContent = r22_right;
+}
+
+[...fields, d19].forEach(el => el.addEventListener('input', recalc));
+recalc();
+</script>
+</body>
+</html>
